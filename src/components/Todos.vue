@@ -1,9 +1,24 @@
 <template>
   <div>
     <h3>Todos</h3>
+    <div class="legend">
+      <span>Double click to mark as complete</span>
+      <span>
+        <span class="incomplete-box"></span> = Incomplete
+      </span>
+      <span>
+        <span class="complete-box"></span> = Complete
+      </span>
+    </div>
     <div class="todos">
-      <div class="todo" v-for="todo in allTodos" :key="todo.id">
-        {{todo.title}}
+      <div 
+        @dblclick="onDblClick(todo)" 
+        class="todo" 
+        v-for="todo in allTodos" 
+        :key="todo.id" 
+        :class="{'is-complete':todo.completed}">
+          {{todo.title}}
+        <i class="fas fa-trash-alt" @click="deleteTodo(todo.id)"></i>
       </div>
     </div>
   </div>
@@ -16,7 +31,18 @@ export default {
 
   name: 'Todos',
   methods: {
-    ...mapActions(['fetchTodos'])
+    ...mapActions(['fetchTodos', 'deleteTodo', 'updateTodo']),
+    onDblClick(todo){
+      
+      const updated = {
+        id: todo.id,
+        title: todo.title,
+        completed: !todo.completed
+      }
+
+      // console.log(this.updateTodo, " ∆∆∆")
+      this.updateTodo(updated);
+    }
   },
   data () {
     return {
@@ -72,6 +98,7 @@ i {
 .is-complete {
   background: #35495e;
   color: #fff;
+  text-decoration: line-through;
 }
 @media (max-width: 500px) {
   .todos {
